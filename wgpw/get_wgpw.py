@@ -74,26 +74,30 @@ class MyHTMLParser(HTMLParser):
                         self.tr_stored = 1
 
 ################ MAIN ##########################
-
-local = 1
+level = 6
+local = 0
+if (len(sys.argv) > 1):
+    local = sys.argv[1]
 
 # get page
 if(local):
     f=open("strona.html", "r")
     if f.mode == 'r':
         contents =f.read()
-
 else:
     fp = urllib.request.urlopen("https://stooq.pl/t/?i=513&v=8")
     mybytes = fp.read()
     contents = mybytes.decode("utf8")
     fp.close()
 
-level = 0
-if (len(sys.argv) > 1):
-    level = sys.argv[1]
-
 parser = MyHTMLParser(level)
 parser.feed(contents)
 
-#https://stooq.pl/t/?i=513&v=8
+if(local == 0):
+    for x in range(2, 6):
+        fp = urllib.request.urlopen("https://stooq.pl/t/?i=513&v=8&l=" + str(x))
+        mybytes = fp.read()
+        contents = mybytes.decode("utf8")
+        fp.close()
+        parser = MyHTMLParser(level)
+        parser.feed(contents)
