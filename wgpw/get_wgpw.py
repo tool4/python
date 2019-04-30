@@ -24,13 +24,14 @@ class MyHTMLParser(HTMLParser):
             self.table_level = self.table_level + 1
         if (tag == "tr"):
             self.tr_level = self.tr_level + 1
-        if (tag == "td"):
+        if (tag == "td" or tag == "th"):
             self.td_level = self.td_level + 1
             self.num_td_attrs = 0
             for attribute in attrs:
                 self.num_td_attrs = self.num_td_attrs + 1
                 if attribute[0] == 'id':
                     self.td_attr = attribute[1]
+                    break
         if (tag == "a"):
             self.a_level = self.a_level + 1
         if (tag == "script"):
@@ -48,7 +49,7 @@ class MyHTMLParser(HTMLParser):
             #print("  **** ", self.table_level, self.tr_level, self.td_level, self.td_attr, self.num_td_attrs);
             self.td_attr = ""
             self.tr_stored = 0
-        if (tag == "td"):
+        if (tag == "td" or tag == "th"):
             self.td_level = self.td_level - 1
             if(self.td_stored == 0):
                 if(self.td_attr =="f13" and self.num_td_attrs == 1):
@@ -64,7 +65,7 @@ class MyHTMLParser(HTMLParser):
         if (self.script_level <= 0):
             if (self.table_level == self.tl):
                 if (self.tr_level == 6 and self.td_attr == "f13" and self.num_td_attrs == 1):
-                    if (self.a_level > 0 or self.td_level > 0):
+                    if (self.a_level > 0 or self.td_level == 9):
                         if(self.column == 1):
                             sys.stdout.write(" %10s" %(data));
                         else:
