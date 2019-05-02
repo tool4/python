@@ -65,7 +65,7 @@ class MyHTMLParser(HTMLParser):
         if (self.script_level <= 0):
             if (self.table_level == self.tl):
                 if (self.tr_level == 6 and self.td_attr == "f13" and self.num_td_attrs == 1):
-                    if (self.a_level > 0 or self.td_level == 9):
+                    if (self.a_level > 0 or self.td_level >= 6):
                         if(self.column == 1):
                             sys.stdout.write(" %10s" %(data));
                         else:
