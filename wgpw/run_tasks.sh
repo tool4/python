@@ -11,4 +11,5 @@ output_file=${output_dir}/wgpw_$(date +'%Y-%m-%d').txt
 echo pwd
 echo ${output_file}
 python3 ~/git/python/wgpw/get_wgpw.py > ${output_file}
+cp -f ${output_file} last_wgpw.txt
 
