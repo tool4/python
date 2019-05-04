@@ -17,6 +17,7 @@ class MyHTMLParser(HTMLParser):
         self.tr_stored = 0
         self.td_attr = ""
         self.num_td_attrs = 0
+        self.th_level = 0
         HTMLParser.__init__(self)
 
     def handle_starttag(self, tag, attrs):
@@ -24,7 +25,7 @@ class MyHTMLParser(HTMLParser):
             self.table_level = self.table_level + 1
         if (tag == "tr"):
             self.tr_level = self.tr_level + 1
-        if (tag == "td" or tag == "th"):
+        if (tag == "td" or (tag == "th" and self.th_level <= 11)):
             self.td_level = self.td_level + 1
             self.num_td_attrs = 0
             for attribute in attrs:
@@ -56,6 +57,8 @@ class MyHTMLParser(HTMLParser):
                     print("        ,", end='')
                 #print(self.td_attr, end='')
             self.td_stored = 0
+        if (tag == "th"):
+            self.th_level = self.th_level + 1
         if (tag == "a"):
             self.a_level = self.a_level - 1
         if (tag == "script"):
@@ -67,7 +70,7 @@ class MyHTMLParser(HTMLParser):
                 if (self.tr_level == 6 and self.td_attr == "f13" and self.num_td_attrs == 1):
                     if (self.a_level > 0 or self.td_level >= 6):
                         if(self.column == 1):
-                            sys.stdout.write(" %10s" %(data));
+                            sys.stdout.write(" %10s," %(data));
                         else:
                             sys.stdout.write("%8s," %(data));
                         self.column = self.column + 1
