@@ -1,0 +1,15 @@
+[Unit]
+Description=LCD date|time|ip
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=python /home/pi/ip.py
+WorkingDirectory=/home/pi
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=network-online.target
