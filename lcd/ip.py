@@ -7,16 +7,13 @@ import datetime
 import RPi.GPIO as GPIO
 import subprocess
 
-#def get_ip_address(ifname):
-#    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#    return socket.inet_ntoa(fcntl.ioctl(
-#        s.fileno(),
-#        0x8915, 
-#        struct.pack('256s', ifname[:15])
-#    )[20:24])
-#lcd.write_string(get_ip_address('wlan0'))
-
-time.sleep(1)
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 lcd = CharLCD(
     numbering_mode=GPIO.BCM,
@@ -36,7 +33,7 @@ def get_line( prefix, filename, suffix ):
         if (s_len > 2):
             str = str[:-1]
             str.ljust(7)[:7]
-            line = (prefix + str + suffix + 5*" ")[:15]
+            line = (prefix + str + suffix + 15*" ")[:15]
             print(line)
             return line
     except:
@@ -47,27 +44,23 @@ counter = 0
 while true == 1:
     #per every 5 min:
     if( (counter % 300) == 0 ):
+        lcd.cursor_pos = (0, 0)
+        lcd.write_string("My IP address:")
+        lcd.cursor_pos = (1, 0)
+        lcd.write_string(get_ip_address('wlan0'))
         rc = subprocess.call("/home/pi/git/python/weather/get_folsom.sh")
-
-        substr_f = get_line("Folsom: ", 'folsom_f.txt', " F")
         substr_c = get_line("Folsom: ", 'folsom_c.txt', " C")
-        substr_hf = get_line("Today:  ", 'folsom_hf.txt', " F")
+        substr_f = get_line("Folsom: ", 'folsom_f.txt', " F")
         substr_hc = get_line("Today:  ", 'folsom_hc.txt', " C")
+        substr_hf = get_line("Today:  ", 'folsom_hf.txt', " F")
+        substr_desc = get_line("", 'folsom_desc.txt', "")
+        time.sleep(1)
         
-        fp = open('folsom_desc.txt', 'r')
-        line = fp.readline()
-        fp.close()
-        line = line[:-1]
-        line.ljust(15)[:15]
-        substr_desc = (line + 15 * " ")[:15]
-        print(substr_desc)
-                                        
     counter = counter + 1    
     x = datetime.datetime.now()
     lcd.cursor_pos = (0, 0)
     lcd.write_string(x.strftime("%d %b  %H:%M:%S"))
     lcd.cursor_pos = (1, 0)
-
     len = 11
     if( (counter % len) < 2):
         lcd.write_string(substr_c)
@@ -79,8 +72,6 @@ while true == 1:
         lcd.write_string(substr_hf)
     elif( (counter % len) <= 10):
         lcd.write_string(substr_desc)
-                
 #    else:
 #        lcd.write_string(u"playing: trojka")
-                        
     time.sleep(1)
