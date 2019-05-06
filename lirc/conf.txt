@@ -1,0 +1,11 @@
+begin
+button = 1 # what button is pressed on the remote
+prog = myprogram # program to handle this command
+config = one, horse # configs are given to program as list
+end
+
+begin
+button = 2
+prog = myprogram
+config = two
+end
