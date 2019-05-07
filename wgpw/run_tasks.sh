@@ -15,3 +15,5 @@ python3 ~/git/python/wgpw/get_wgpw.py > ${output_file}
 cp -f ${output_file} last_wgpw.txt
 cat last_wgpw.txt | gawk -F, '{ print $1}' > wgpw_names.txt
 
+cat last_wgpw.txt | grep -v Symbol > last_wgpw_pure.txt
+python read_lines.py > wybrane_spolki.txt
