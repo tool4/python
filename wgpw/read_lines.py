@@ -48,6 +48,6 @@ with open(filepath) as fp:
         line = fp.readline()
         cnt += 1
 
-print( "Całkowita zmiana, suma: ", zmiana_all, "%, srednia: ", zmiana_all / all_cnt)
+print( "Calkowita zmiana, suma: ", zmiana_all, "%, srednia: ", zmiana_all / all_cnt)
 print( "zmiana spolek na plusie: ", zmiana_positive, "%, srednia: ", zmiana_positive / pos_cnt)
 print( "zmiana wybranych spolek: ", zmiana_chosen, "%, srednia: ", zmiana_chosen / chs_cnt)
