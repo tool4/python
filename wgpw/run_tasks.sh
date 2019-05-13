@@ -1,9 +1,9 @@
 #!/bin/bash
-
+echo $(date +'%Y-%m-%d %H:%M') > ~/run_tasks.log
 cd ~/wgpw/data
 
 ### mm/dd/yyyy ###
-date +'%Y-%m-%d'
+echo $(date +'%Y-%m-%d %H:%M')
 
 output_dir=$(date +'%Y')
 mkdir ${output_dir} -p

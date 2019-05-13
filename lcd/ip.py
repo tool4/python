@@ -59,8 +59,8 @@ file = open("iplog.txt","w", buffering=1)
 true = 1
 counter = 0
 while true == 1:
-    #per every 5 min:
-    if( (counter % 30) == 0 or invalid_file == 1):
+    #per every 10 min:
+    if( (counter % 600) == 0 or invalid_file == 1):
         invalid_file = 0
         file.write( "counter: %d\n" % counter)
         #lcd.cursor_pos = (0, 0)
