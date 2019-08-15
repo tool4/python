@@ -19,6 +19,7 @@ import select
 #    print("cannot conntect to ", server_address)
 #    sys.exit(1)
 
+
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -38,39 +39,47 @@ lcd = CharLCD(
 
 invalid_file = 0
 
-def get_line( prefix, filename, suffix ):
+def get_line(file, prefix, filename, suffix ):
     try:
+        file.write("getline START\n")
         fp = open(filename, 'r')
         str = fp.readline()
         fp.close()
         str = str[:-1]
         str.ljust(7)[:7]
         line = (prefix + str + suffix + 15*" ")[:15]
-        print(line)
+        file.write("GETLINE END: %s\n" % line)
         return line
     except:
+        file.write("exception\n")
         invalid_file = 1
         return "Invalid file" + filename
 
+file = open("iplog.txt","w", buffering=1)
 true = 1
 counter = 0
 while true == 1:
-    #per every 5 min:
-    if( (counter % 300) == 0 or invalid_file == 1):
+    #per every 10 min:
+    if( (counter % 600) == 0 or invalid_file == 1):
         invalid_file = 0
-        print "counter: ", counter
+        file.write( "counter: %d\n" % counter)
         #lcd.cursor_pos = (0, 0)
         #lcd.write_string("My IP address:" + str(counter))
         #lcd.cursor_pos = (1, 0)
         #lcd.write_string(get_ip_address('wlan0'))
-        rc = subprocess.call("/home/pi/git/python/weather/get_folsom.sh")
-        substr_c = get_line("Folsom: ", 'folsom_c.txt', " C")
-        substr_f = get_line("Folsom: ", 'folsom_f.txt', " F")
-        substr_hc = get_line("Today:  ", 'folsom_hc.txt', " C")
-        substr_hf = get_line("Today:  ", 'folsom_hf.txt', " F")
-        substr_desc = get_line("", 'folsom_desc.txt', "")
+        file.write("calling shell script\n")
+        rc = subprocess.call(
+            ["/home/pi/git/python/weather/get_folsom.sh", str(counter)],
+            stdout=file,
+            shell=False)
+        file.write("shell script returned: %d\n" % rc)
+        substr_c = get_line(file, "Folsom: ", 'folsom_c.txt', " C")
+        substr_f = get_line(file, "Folsom: ", 'folsom_f.txt', " F")
+        substr_hc = get_line(file, "Today:  ", 'folsom_hc.txt', " C")
+        substr_hf = get_line(file, "Today:  ", 'folsom_hf.txt', " F")
+        substr_desc = get_line(file, "", 'folsom_desc.txt', "")
         time.sleep(1)
-        
+        file.write("sleep end, counter: %d\n" % counter)
     counter += 1
     x = datetime.datetime.now()
     lcd.cursor_pos = (0, 0)
@@ -90,6 +99,7 @@ while true == 1:
 #    else:
 #        lcd.write_string(u"playing: trojka")
     time.sleep(1)
+    file.write("%d\n" % counter)
 
 #    try:
 #        rs, ws, es = select.select([sys.stdin, sock], [], [])

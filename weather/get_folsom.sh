@@ -1,14 +1,15 @@
 #!/bin/bash
 
+echo $0 $1
+echo "bash script start, counter: " $1
 
 #wget "https://weather.cit.api.here.com/weather/1.0/report.json?product=observation&zipcode=95630&oneobservation=true&app_id=DemoAppId01082013GAL&app_code=AJKnXv84fjrb0KIHawS0Tg&metric=false" -O folsom.json -nv 2> /dev/null
-
 # kamerka.blossom:
 #app_id=2i2oc1wakxFhzlNTvn3v
 #app_code=N3WPLlKU8J7sQR_-tdN1-A
 
 wget "https://weather.cit.api.here.com/weather/1.0/report.json?product=observation&zipcode=95630&oneobservation=true&\
-app_id=2i2oc1wakxFhzlNTvn3v&app_code=N3WPLlKU8J7sQR_-tdN1-A&metric=false" -O folsom_f.json -nv 
+app_id=2i2oc1wakxFhzlNTvn3v&app_code=N3WPLlKU8J7sQR_-tdN1-A&metric=false" -O folsom_f.json -nv 2> /dev/null
 
 wget "https://weather.cit.api.here.com/weather/1.0/report.json?product=observation&zipcode=95630&oneobservation=true&\
 app_id=2i2oc1wakxFhzlNTvn3v&app_code=N3WPLlKU8J7sQR_-tdN1-A&metric=true" -O folsom_c.json -nv 2> /dev/null
@@ -50,5 +51,5 @@ echo $(date +'%H:%M:%S') ": " >> ${output_file}
 cat folsom_hc.txt >> ${output_file}
 cat folsom_hc.txt
 
-
+echo "bash script ends, counter: " $1
 
