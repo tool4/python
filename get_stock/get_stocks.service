@@ -1,0 +1,15 @@
+[Unit]
+Description=getstocks
+Requires=
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/git/python/get_stock/get_sp500.py > /home/pi/git/python/get_stock/sp500.log
+WorkingDirectory=/home/pi/git/python/get_stock/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=network-online.target

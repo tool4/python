@@ -58,19 +58,27 @@ def log_single_stock(name,stock_data):
         os.mkdir(LOG_DIR +  "/" + name + "/" + YEAR)
     if not os.path.isdir(LOG_DIR + "/" + name + "/" +  YEAR + "/" + MONTH):
         os.mkdir(LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH)
-    csv_filename = LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH + "/" + stock_data[1] + "_" +  DAY + ".csv"
+    index = int(stock_data[0])
+    stock_data[0] = "%03d" %(index)
+    stock_data[2] = stock_data[2].replace("\'", "")
+    stock_data[2] = stock_data[2].replace("\"", "")
+    csv_filename = LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH + "/";
+    csv_filename = csv_filename + stock_data[0] + "_" + stock_data[1] + "_";
+    csv_filename = csv_filename + stock_data[2].replace(" ", "_") + "_" +  DAY + ".csv"
     LOG(csv_filename + ':')
     if not os.path.isfile(csv_filename):
         csv_file = open(csv_filename, 'w')
-        csv_file.write('TIME, INDEX, SYMBOL, NAME, WEIGHT, PRICE, CHANGE, CHANGE_PERCENT\n')
+        csv_file.write('TIME, PRICE, CHANGE, CHANGE_PERCENT,\n')
         csv_file.close()
+    print(csv_filename)
     csv_file = open(csv_filename, 'a')
     csv_file.write(timestamp + ', ')
-    for data in stock_data:
-        csv_file.write(data + ', ')
-        LOG(data)
+    csv_file.write(stock_data[4] + ', ')
+    csv_file.write(stock_data[5] + ', ')
+    csv_file.write(stock_data[6] + ', ')
     csv_file.write('\n')
     csv_file.close()
+    LOG(stock_data)
 
 def GetSP500():
     url = 'https://www.slickcharts.com/sp500'
@@ -141,15 +149,20 @@ def GetSP500():
     return
 
 while True:
+    force = False
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-f":
+            force = True
     x = datetime.datetime.now()
+    timestamp = x.strftime("%H:%M")
     hour = int(x.strftime("%H"))
     minute = int(x.strftime("%M"))
     minutes = hour * 60 + minute
     day = int(x.strftime("%w"))
     #stock market is open Mon-Fri between 6:30 and 13:30 PST:
-    if day > 0 and day < 6 and minutes >= 6 * 60 + 20 and minutes <= 13 * 60 + 30:
+    if force or (day > 0 and day < 6 and minutes >= 6 * 60 + 20 and minutes <= 14 * 60 + 0):
         GetSP500()
         time.sleep(60)
     else:
-        print("market closed, sleeping for 10 min")
+        print(timestamp + " market closed, sleeping for 10 min\n")
         time.sleep(600)
