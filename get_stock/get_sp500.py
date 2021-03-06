@@ -44,7 +44,7 @@ TD7 = re.compile(td7)
 
 LOG_DIR = "./files"
 
-def log_single_stock(name,stock_data):
+def log_single_stock(name, stock_data):
     x = datetime.datetime.now()
     timestamp = x.strftime("%H:%M")
     YEAR = x.strftime("%Y")
@@ -58,10 +58,14 @@ def log_single_stock(name,stock_data):
         os.mkdir(LOG_DIR +  "/" + name + "/" + YEAR)
     if not os.path.isdir(LOG_DIR + "/" + name + "/" +  YEAR + "/" + MONTH):
         os.mkdir(LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH)
+        os.system('ln -s ../index.php ' + LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH + '/index.php')
+        os.system('ln -s ../readcsv.php ' + LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH + '/readcsv.php')
+
     index = int(stock_data[0])
     stock_data[0] = "%03d" %(index)
     stock_data[2] = stock_data[2].replace("\'", "")
     stock_data[2] = stock_data[2].replace("\"", "")
+    stock_data[2] = stock_data[2].replace('&', 'and')
     csv_filename = LOG_DIR + "/" + name + "/" + YEAR + "/" + MONTH + "/";
     csv_filename = csv_filename + stock_data[0] + "_" + stock_data[1] + "_";
     csv_filename = csv_filename + stock_data[2].replace(" ", "_") + "_" +  DAY + ".csv"
@@ -90,7 +94,7 @@ def GetSP500():
     stock_data = ["", "", "", "", "", "", ""]
     for line in webpage.splitlines():
         line = str(line).replace(',', '')
-        line = line.replace('&amp;', '&').replace('&#39;', '\'')
+        line = line.replace('&amp;', 'and').replace('&#39;', '\'')
         td1 = TD1.match(line)
         td2 = TD2.match(line)
         td3 = TD3.match(line)
