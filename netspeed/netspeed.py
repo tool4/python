@@ -17,7 +17,7 @@ def main():
     now = datetime.datetime.now()
     time = now.strftime('%H:%M:%S')
     date = now.strftime('%Y-%m-%d')
-    os.system('/home/pi/.local/bin/speedtest > /tmp/temp.txt')
+    #os.system('/home/pi/.local/bin/speedtest > /tmp/temp.txt')
     down = 'unknown'
     up = 'unknown'
     with open('/tmp/temp.txt') as file:
@@ -31,9 +31,10 @@ def main():
                 print("%s" %(m2.group('speed')))
                 up = m2.group('speed')
     filename = "/var/www/html/netspeed/speed_%s.csv" %date
-    out_file = open(filename, 'a')
-    out_file.write("%s, %s, %s\n" %(time, down, up))
-    out_file.close()
+    if down != "unknown" and up != "unknown":
+        out_file = open(filename, 'a')
+        out_file.write("%s, %s, %s\n" %(time, down, up))
+        out_file.close()
 
 if __name__ == '__main__':
     sys.exit(main())
